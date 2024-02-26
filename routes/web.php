@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\UsersController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -17,6 +18,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+    Route::get('/messages/{message}/edit', [MessageController::class, 'edit'])->name('messages.edit');
+    Route::put('/messages/{message}', [MessageController::class, 'update'])->name('messages.update');
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('users', UsersController::class);
+});
+
+Auth::routes();
